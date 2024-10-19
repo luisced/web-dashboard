@@ -27,10 +27,10 @@
                         <td><a href="mailto:{{ $assesory->email }}">{{ $assesory->email }}</a></td>
                         <td>{{ $assesory->date }}</td>
                         <td>{{ $assesory->duration }}</td>
-                        <td>{{ $assesory->category->name ?? 'N/A' }}</td>
+                        <td>{{ $assesory->category->nombre ?? 'N/A' }}</td>
                         <td>
                             @foreach($assesory->asesors as $asesor)
-                                {{ $asesor->name }}<br>
+                                {{ $asesor->nombre }}<br>
                             @endforeach
                         </td>
                     </tr>

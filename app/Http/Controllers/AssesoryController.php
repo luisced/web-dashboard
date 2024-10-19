@@ -97,7 +97,7 @@ class AssesoryController extends Controller
         $assesory = Assesory::findOrFail($id);
         $assesory->delete();
 
-        return response()->json(null, 204); // Return HTTP 204 No Content on successful deletion
+        return response()->json(null, 204);
     }
 
     public function dashboardResults()
