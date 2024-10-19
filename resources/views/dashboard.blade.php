@@ -12,25 +12,13 @@
 
         <!-- Filter Section -->
         <div class="filters">
-            <div class="filter-group">
-                <label for="start-date">Inicio:</label>
-                <input type="date" id="start-date">
-                <button id="reset-start-date">✖</button>
-            </div>
+            @component('components.date-filter', ['id' => 'start-date', 'label' => 'Inicio']) @endcomponent
 
-            <div class="filter-group">
-                <label for="end-date">Fin:</label>
-                <input type="date" id="end-date">
-                <button id="reset-end-date">✖</button>
-            </div>
+            @component('components.date-filter', ['id' => 'end-date', 'label' => 'Fin']) @endcomponent
 
-            <div class="filter-group">
-                <label for="talent-member">Asesores:</label>
-                <select id="talent-member">
-                    <option value="">Seleccione un asesor</option>
-                    <!-- Dynamically populated Asesores -->
-                </select>
-            </div>
+            @component('components.select-filter', ['id' => 'talent-member', 'label' => 'Asesores', 'defaultOption' => 'Seleccione un asesor'])
+                <!-- Dynamically populated Asesores -->
+            @endcomponent
 
             <div class="filter-group">
                 <label for="location">Sede:</label>
@@ -44,13 +32,9 @@
                 </select>
             </div>
 
-            <div class="filter-group">
-                <label for="category">Categoría:</label>
-                <select id="category">
-                    <option value="">Seleccione una Categoría</option>
-                    <!-- Dynamically populated Categorías -->
-                </select>
-            </div>
+            @component('components.select-filter', ['id' => 'category', 'label' => 'Categoría', 'defaultOption' => 'Seleccione una Categoría'])
+                <!-- Dynamically populated Categorías -->
+            @endcomponent
 
             <!-- Buttons Group -->
             <div class="buttons-group">
