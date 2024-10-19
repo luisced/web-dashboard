@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AssesoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,4 +13,4 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 });
 
-Route::get('/dashboard-results', [DashboardController::class, 'showResults']);
+Route::get('/dashboard-results', [AssesoryController::class, 'dashboardResults']);

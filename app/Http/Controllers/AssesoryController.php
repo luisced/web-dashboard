@@ -99,4 +99,10 @@ class AssesoryController extends Controller
 
         return response()->json(null, 204); // Return HTTP 204 No Content on successful deletion
     }
+
+    public function dashboardResults()
+    {
+        $assesories = Assesory::with('category', 'asesors')->get();
+        return view('dashboard-results', compact('assesories'));
+    }
 }
