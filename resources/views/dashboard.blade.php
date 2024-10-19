@@ -64,6 +64,16 @@
 
         <!-- Results Section -->
         <div id="results"></div>
+
+        <!-- Summary Item -->
+        <div class="summary-component">
+            @component('components.summary-item', ['value' => '164', 'label' => 'Sesiones']) @endcomponent
+            @component('components.summary-item', ['value' => '145:45', 'label' => 'Total Hrs. Profesor']) @endcomponent
+            @component('components.summary-item', ['value' => '0:53', 'label' => 'Duración Media Sesión']) @endcomponent
+            @component('components.summary-item', ['value' => '147:15', 'label' => 'Total Hrs. Talent']) @endcomponent
+            @component('components.summary-item', ['value' => '126', 'label' => 'Profesores']) @endcomponent
+        </div>
+
     </div>
 
     <!-- JS to handle filters and populate dropdowns dynamically -->
