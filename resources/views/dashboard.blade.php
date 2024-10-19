@@ -28,8 +28,7 @@
                 <label for="talent-member">Asesores:</label>
                 <select id="talent-member">
                     <option value="">Seleccione un asesor</option>
-                    <!-- Populate dynamically -->
-                     
+                    <!-- Dynamically populated Asesores -->
                 </select>
             </div>
 
@@ -49,7 +48,7 @@
                 <label for="category">Categoría:</label>
                 <select id="category">
                     <option value="">Seleccione una Categoría</option>
-                    <!-- Populate dynamically -->
+                    <!-- Dynamically populated Categorías -->
                 </select>
             </div>
 
@@ -67,33 +66,35 @@
         <div id="results"></div>
     </div>
 
-    <!-- JS to handle filters -->
+    <!-- JS to handle filters and populate dropdowns dynamically -->
     <script>
-        // Populate talent members and categories dynamically
         document.addEventListener('DOMContentLoaded', function() {
+            // Fetch asesors and populate the dropdown
             fetch('/api/asesors')
                 .then(response => response.json())
                 .then(data => {
                     const talentSelect = document.getElementById('talent-member');
                     data.forEach(asesor => {
                         const option = document.createElement('option');
-                        option.value = asesor.ID;
-                        option.textContent = asesor.Nombre;
+                        option.value = asesor.id; // Assuming 'id' is the correct field
+                        option.textContent = asesor.nombre; // Assuming 'nombre' is the correct field
                         talentSelect.appendChild(option);
                     });
-                });
+                }).catch(error => console.error('Error fetching asesors:', error));
 
-            fetch('/api/categories')
+            // Fetch categories and populate the dropdown
+            fetch('/api/categorias')
                 .then(response => response.json())
                 .then(data => {
                     const categorySelect = document.getElementById('category');
-                    data.forEach(category => {
+                    data.forEach(categoria => {
                         const option = document.createElement('option');
-                        option.value = category.ID;
-                        option.textContent = category.Nombre;
+                        option.value = categoria.id; // Assuming ID field is 'id'
+                        option.textContent = categoria.nombre; // Assuming name field is 'nombre'
                         categorySelect.appendChild(option);
                     });
-                });
+                })
+                .catch(error => console.error('Error fetching categories:', error));
         });
 
         // Clear filters
