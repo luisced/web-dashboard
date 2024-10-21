@@ -9,3 +9,7 @@ Route::apiResource('asesors', AsesorController::class);
 Route::resource('assesories', AssesoryController::class);
 Route::apiResource('categorias', CategoriaController::class);
 
+// Add this line for the asesorias endpoint
+Route::get('asesorias', [AssesoryController::class, 'index']);
+
+Route::get('summary', [AssesoryController::class, 'getSummary']);

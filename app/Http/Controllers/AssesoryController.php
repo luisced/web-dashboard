@@ -10,10 +10,37 @@ use Illuminate\Http\Request;
 class AssesoryController extends Controller
 {
     // Display a listing of the resource.
-    public function index()
+    public function index(Request $request)
     {
-        // Include relations for asesors and categories if needed
-        $assesories = Assesory::with('category', 'asesors')->get();
+        $query = Assesory::with('category', 'asesors');
+
+        if ($request->has('start')) {
+            $query->where('date', '>=', $request->start);
+        }
+
+        if ($request->has('end')) {
+            $query->where('date', '<=', $request->end);
+        }
+
+        if ($request->has('talent') && $request->talent != '') {
+            $query->whereHas('asesors', function($q) use ($request) {
+                $q->where('asesors.id', $request->talent); // Specify the table for the id
+            });
+        }
+
+        if ($request->has('category') && $request->category != '') {
+            $query->where('category_id', $request->category);
+        }
+
+        // Add a check for 'asesor' filter
+        if ($request->has('asesor') && $request->asesor != '') {
+            $query->whereHas('asesors', function($q) use ($request) {
+                $q->where('asesors.id', $request->asesor); // Specify the table for the id
+            });
+        }
+
+        $assesories = $query->get();
+
         return response()->json($assesories);
     }
 
@@ -104,5 +131,26 @@ class AssesoryController extends Controller
     {
         $assesories = Assesory::with('category', 'asesors')->get();
         return view('dashboard-results', compact('assesories'));
+    }
+
+    public function getSummary()
+    {
+        $assesories = Assesory::with('asesors')->get();
+
+        $sessionsCount = $assesories->count();
+        $totalStudentHours = $assesories->sum('duration') / 60; // Assuming duration is in minutes
+        $averageSessionDuration = $sessionsCount > 0 ? $assesories->avg('duration') : 0;
+        $totalTalentHours = $assesories->sum(function ($assesory) {
+            return $assesory->asesors->count() * $assesory->duration;
+        }) / 60;
+        $uniqueStudents = $assesories->pluck('email')->unique()->count();
+
+        return response()->json([
+            'sessionsCount' => $sessionsCount,
+            'totalStudentHours' => $totalStudentHours,
+            'averageSessionDuration' => $averageSessionDuration,
+            'totalTalentHours' => $totalTalentHours,
+            'uniqueStudents' => $uniqueStudents,
+        ]);
     }
 }
