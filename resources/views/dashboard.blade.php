@@ -4,147 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asesorías Dashboard</title>
-    <link rel="stylesheet" href="{{ asset('styles.css') }}">
+    <!-- Link to Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Link to Dashboard CSS -->
+    <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div class="dashboard-container">
-        <h1>Ad / Asesorias / Dashboard</h1>
+    @include('components.navbar') <!-- Include the navbar component here -->
+    <div class="container mt-5">
+        <h1 class="text-center text-primary font-weight-bold mb-5">Asesorías Dashboard</h1>
+
+        <!-- Summary Ribbon -->
+        <div class="summary-ribbon">
+            <div class="row">
+                <div class="col-md-2 col-6 summary-item">
+                    <h5>Sesiones:</h5>
+                    <p id="sessionsCount">0</p>
+                </div>
+                <div class="col-md-2 col-6 summary-item">
+                    <h5>Total Hrs. Alumnos:</h5>
+                    <p id="totalStudentHours">0</p>
+                </div>
+                <div class="col-md-2 col-6 summary-item">
+                    <h5>Duración media de sesión:</h5>
+                    <p id="averageSessionDuration">0</p>
+                </div>
+                <div class="col-md-2 col-6 summary-item">
+                    <h5>Total hrs. Talent:</h5>
+                    <p id="totalTalentHours">0</p>
+                </div>
+                <div class="col-md-2 col-6 summary-item">
+                    <h5>Profesores:</h5>
+                    <p id="uniqueStudents">0</p>
+                </div>
+            </div>
+        </div>
 
         <!-- Filter Section -->
-        <div class="filters">
-            <div class="filter-group">
-                <label for="start-date">Inicio:</label>
-                <input type="date" id="start-date">
-                <button id="reset-start-date">✖</button>
+        <div class="card shadow-sm p-4 mb-4">
+            <div class="row">
+                <div class="col-md-6 filter-group">
+                    <div class="form-group">
+                        <label for="start-date" class="font-weight-bold">Inicio:</label>
+                        <input type="date" id="start-date" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6 filter-group">
+                    <div class="form-group">
+                        <label for="end-date" class="font-weight-bold">Fin:</label>
+                        <input type="date" id="end-date" class="form-control">
+                    </div>
+                </div>
             </div>
 
-            <div class="filter-group">
-                <label for="end-date">Fin:</label>
-                <input type="date" id="end-date">
-                <button id="reset-end-date">✖</button>
+            <div class="row">
+                <div class="col-md-6 filter-group">
+                    <div class="form-group">
+                        <label for="talent-member" class="font-weight-bold">Asesores:</label>
+                        <select id="talent-member" class="form-select form-control">
+                            <option value="">Seleccione un asesor</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 filter-group">
+                    <div class="form-group">
+                        <label for="location" class="font-weight-bold">Sede:</label>
+                        <select id="location" class="form-select form-control">
+                            <option value="">Todas las sedes</option>
+                            <option value="1">México</option>
+                            <option value="4">Aguascalientes</option>
+                            <option value="5">Guadalajara</option>
+                            <option value="6">Ciudad UP</option>
+                            <option value="1007">Sin Sede</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <div class="filter-group">
-                <label for="talent-member">Asesores:</label>
-                <select id="talent-member">
-                    <option value="">Seleccione un asesor</option>
-                    <!-- Dynamically populated Asesores -->
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="location">Sede:</label>
-                <select id="location">
-                    <option value="">Todas las sedes</option>
-                    <option value="1">México</option>
-                    <option value="4">Aguascalientes</option>
-                    <option value="5">Guadalajara</option>
-                    <option value="6">Ciudad UP</option>
-                    <option value="1007">Sin Sede</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="category">Categoría:</label>
-                <select id="category">
-                    <option value="">Seleccione una Categoría</option>
-                    <!-- Dynamically populated Categorías -->
-                </select>
+            <div class="row">
+                <div class="col-md-6 filter-group">
+                    <div class="form-group">
+                        <label for="category" class="font-weight-bold">Categoría:</label>
+                        <select id="category" class="form-select form-control">
+                            <option value="">Seleccione una Categoría</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- Buttons Group -->
-            <div class="buttons-group">
-                <button class="btn-clear" id="clear-filters">Limpiar</button>
-                <button class="btn-search" id="search">Buscar</button>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-secondary mr-2" id="clear-filters">Limpiar</button>
+                <button class="btn btn-primary" id="search">Buscar</button>
             </div>
         </div>
 
         <!-- Summary of Selected Filters -->
-        <div class="summary-filters" id="selected-filters"></div>
+        <div class="alert alert-info" id="selected-filters"></div>
 
         <!-- Results Section -->
-        <div id="results"></div>
-
-        <!-- Summary Item -->
-        <div class="summary-component">
-            @component('components.summary-item', ['value' => '164', 'label' => 'Sesiones']) @endcomponent
-            @component('components.summary-item', ['value' => '145:45', 'label' => 'Total Hrs. Profesor']) @endcomponent
-            @component('components.summary-item', ['value' => '0:53', 'label' => 'Duración Media Sesión']) @endcomponent
-            @component('components.summary-item', ['value' => '147:15', 'label' => 'Total Hrs. Talent']) @endcomponent
-            @component('components.summary-item', ['value' => '126', 'label' => 'Profesores']) @endcomponent
-        </div>
+        <div id="results" class="results-container"></div>
 
     </div>
 
     <!-- JS to handle filters and populate dropdowns dynamically -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fetch asesors and populate the dropdown
-            fetch('/api/asesors')
-                .then(response => response.json())
-                .then(data => {
-                    const talentSelect = document.getElementById('talent-member');
-                    data.forEach(asesor => {
-                        const option = document.createElement('option');
-                        option.value = asesor.id; // Assuming 'id' is the correct field
-                        option.textContent = asesor.nombre; // Assuming 'nombre' is the correct field
-                        talentSelect.appendChild(option);
-                    });
-                }).catch(error => console.error('Error fetching asesors:', error));
+    <script src="{{ asset('js/dashboard.js') }}"></script>
 
-            // Fetch categories and populate the dropdown
-            fetch('/api/categorias')
-                .then(response => response.json())
-                .then(data => {
-                    const categorySelect = document.getElementById('category');
-                    data.forEach(categoria => {
-                        const option = document.createElement('option');
-                        option.value = categoria.id; // Assuming ID field is 'id'
-                        option.textContent = categoria.nombre; // Assuming name field is 'nombre'
-                        categorySelect.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching categories:', error));
-        });
-
-        // Clear filters
-        document.getElementById('clear-filters').addEventListener('click', function() {
-            document.getElementById('start-date').value = '';
-            document.getElementById('end-date').value = '';
-            document.getElementById('talent-member').value = '';
-            document.getElementById('location').value = '';
-            document.getElementById('category').value = '';
-            document.getElementById('selected-filters').innerHTML = '';
-        });
-
-        // Search and display results
-        document.getElementById('search').addEventListener('click', function() {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            const talentMember = document.getElementById('talent-member').value;
-            const location = document.getElementById('location').value;
-            const category = document.getElementById('category').value;
-
-            // Display selected filters
-            const selectedFilters = document.getElementById('selected-filters');
-            selectedFilters.innerHTML = `
-                <div>Inicio: ${startDate || 'N/A'}</div>
-                <div>Fin: ${endDate || 'N/A'}</div>
-                <div>Talent: ${talentMember || 'N/A'}</div>
-                <div>Sede: ${location || 'N/A'}</div>
-                <div>Categoría: ${category || 'N/A'}</div>
-            `;
-
-            // Fetch and display results
-            fetch(`/api/asesorias?start=${startDate}&end=${endDate}&talent=${talentMember}&location=${location}&category=${category}`)
-                .then(response => response.json())
-                .then(data => {
-                    const results = document.getElementById('results');
-                    results.innerHTML = data.map(asesoria => `
-                        <div>ID: ${asesoria.ID}, Correo: ${asesoria.Correo}, Fecha: ${asesoria.Fecha}, Duración: ${asesoria.Duracion}, Categoría: ${asesoria.Categoria}, Asesor: ${asesoria.Asesor}</div>
-                    `).join('');
-                });
-        });
-    </script>
 </body>
 </html>

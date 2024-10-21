@@ -1,0 +1,35 @@
+.table {
+    margin: 20px auto;
+    width: 90%;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+}
+
+.table thead th {
+    background-color: #343a40;
+    color: white;
+    border: none;
+}
+
+.table tbody tr {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.table tbody td {
+    border-top: none;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table tbody td a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.table tbody td a:hover {
+    text-decoration: underline;
+}
