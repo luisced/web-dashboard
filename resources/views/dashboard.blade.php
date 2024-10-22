@@ -58,36 +58,49 @@
             </div>
 
             <div class="row">
+                <!-- Asesores Filter with Multiselect -->
                 <div class="col-md-6 filter-group">
                     <div class="form-group">
                         <label for="talent-member" class="font-weight-bold">Asesores:</label>
-                        <select id="talent-member" class="form-select form-control">
-                            <option value="">Seleccione un asesor</option>
+                        <select id="talent-member" class="form-select form-control" multiple>
+                            <!-- Options will be populated dynamically -->
+                            <option value="1">Asesor 1</option>
+                            <option value="2">Asesor 2</option>
+                            <option value="3">Asesor 3</option>
+                            <!-- Add more options as needed -->
                         </select>
+                        <button type="button" class="btn btn-link p-0 mt-1" onclick="deselectAll('talent-member')">Deselect All</button>
                     </div>
                 </div>
+                <!-- Sede Filter with Multiselect -->
                 <div class="col-md-6 filter-group">
                     <div class="form-group">
                         <label for="location" class="font-weight-bold">Sede:</label>
-                        <select id="location" class="form-select form-control">
-                            <option value="">Todas las sedes</option>
+                        <select id="location" class="form-select form-control" multiple>
                             <option value="1">México</option>
                             <option value="4">Aguascalientes</option>
                             <option value="5">Guadalajara</option>
                             <option value="6">Ciudad UP</option>
                             <option value="1007">Sin Sede</option>
                         </select>
+                        <button type="button" class="btn btn-link p-0 mt-1" onclick="deselectAll('location')">Deselect All</button>
                     </div>
                 </div>
             </div>
 
             <div class="row">
+                <!-- Categoría Filter with Multiselect -->
                 <div class="col-md-6 filter-group">
                     <div class="form-group">
                         <label for="category" class="font-weight-bold">Categoría:</label>
-                        <select id="category" class="form-select form-control">
-                            <option value="">Seleccione una Categoría</option>
+                        <select id="category" class="form-select form-control" multiple>
+                            <!-- Options will be populated dynamically -->
+                            <option value="1">Categoría 1</option>
+                            <option value="2">Categoría 2</option>
+                            <option value="3">Categoría 3</option>
+                            <!-- Add more options as needed -->
                         </select>
+                        <button type="button" class="btn btn-link p-0 mt-1" onclick="deselectAll('category')">Deselect All</button>
                     </div>
                 </div>
             </div>
@@ -109,6 +122,16 @@
 
     <!-- JS to handle filters and populate dropdowns dynamically -->
     <script src="{{ asset('js/dashboard.js') }}"></script>
+
+    <!-- JavaScript Function to Deselect All Options -->
+    <script>
+        function deselectAll(selectId) {
+            var select = document.getElementById(selectId);
+            for (var i = 0; i < select.options.length; i++) {
+                select.options[i].selected = false;
+            }
+        }
+    </script>
 
 </body>
 </html>

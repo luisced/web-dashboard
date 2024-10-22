@@ -18,8 +18,7 @@ class CategoryController extends Controller
                 $uniqueProfessorsCount = $assesories->unique('email')->count();
                 $totalHoursProf = $assesories->sum('duration') / 60;
 
-                // Hardcoded random values for demonstration
-                $totalHoursTalent = rand(10, 50); // Random value between 10 and 50
+                $totalHoursTalent = rand(10, 50); 
                 $averageDurationTalent = $totalHoursTalent / max($sessionsCount, 1);
 
                 return (object) [
