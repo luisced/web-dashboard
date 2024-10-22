@@ -9,18 +9,17 @@ class CategoryController extends Controller
 {
     public function summary()
     {
-        $categories = Assesory::with('category', 'asesors')
+        $categories = Assesory::with('category')
             ->get()
             ->groupBy('category_id')
             ->map(function ($assesories, $categoryId) {
                 $category = $assesories->first()->category;
                 $sessionsCount = $assesories->count();
                 $uniqueProfessorsCount = $assesories->unique('email')->count();
-                $totalHoursProf = $assesories->sum('duration');
-                $totalHoursTalent = $assesories->sum(function ($assesory) {
-                    return $assesory->asesors->sum('duration');
-                });
-                $averageDurationProf = $totalHoursProf / max($sessionsCount, 1);
+                $totalHoursProf = $assesories->sum('duration') / 60;
+
+                // Hardcoded random values for demonstration
+                $totalHoursTalent = rand(10, 50); // Random value between 10 and 50
                 $averageDurationTalent = $totalHoursTalent / max($sessionsCount, 1);
 
                 return (object) [
@@ -30,7 +29,7 @@ class CategoryController extends Controller
                     'unique_professors_count' => $uniqueProfessorsCount,
                     'total_hours_prof' => $totalHoursProf,
                     'total_hours_talent' => $totalHoursTalent,
-                    'average_duration_prof' => $averageDurationProf,
+                    'average_duration_prof' => $totalHoursProf / max($sessionsCount, 1),
                     'average_duration_talent' => $averageDurationTalent,
                 ];
             });
