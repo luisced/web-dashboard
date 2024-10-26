@@ -34,10 +34,17 @@ class AssesoryController extends Controller
 
         // Add a check for 'asesor' filter
         if ($request->has('asesor') && $request->asesor != '') {
-            $query->whereHas('asesors', function ($q) use ($request) {
-                $q->where('asesors.id', $request->asesor); // Specify the table for the id
+            $asesorIds = explode(',', $request->asesor); // Convert the comma-separated string to an array
+
+            $query->where(function ($query) use ($asesorIds) {
+                foreach ($asesorIds as $asesorId) {
+                    $query->orWhereHas('asesors', function ($q) use ($asesorId) {
+                        $q->where('asesors.id', $asesorId);
+                    });
+                }
             });
         }
+
 
         $assesories = $query->get();
 
