@@ -14,7 +14,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="/dashboard-results">Results</a>
             </li>
-            <!-- Add more links as needed -->
+            <li class="nav-item">
+                <a class="nav-link" href="/categories-summary">Categories Summary</a>
+            </li>
         </ul>
     </div>
 </nav>
