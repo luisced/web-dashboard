@@ -98,4 +98,37 @@ document.getElementById('search').addEventListener('click', function() {
             });
         })
         .catch(error => console.error('Error fetching asesorias:', error));
+
+
 });
+
+// Fetch and display summary with percentages
+function fetchSummaryWithPercentages() {
+    fetch(`/api/asesorias_summary?start=${startDate}&end=${endDate}&talent=${talentMember}&location=${location}&category=${category}`)
+        .then(response => response.json())
+        .then(data => {
+            // Calculate percentages for each asesor
+            const summaryTable = document.getElementById('summary-table');
+            summaryTable.innerHTML = ''; // Clear previous content
+            data.forEach(asesor => {
+                const horasProfesor = asesor.horas_profesor;
+                const horasTalent = asesor.horas_talent;
+                const porcentajeProfesor = ((asesor.horas_total / horasProfesor) * 100).toFixed(2);
+                const porcentajeTalent = ((asesor.horas_total / horasTalent) * 100).toFixed(2);
+
+                // Create a new row for each asesor in the summary table
+                summaryTable.innerHTML += `
+                    <tr>
+                        <td>${asesor.nombre}</td>
+                        <td>${asesor.horas_total}</td>
+                        <td>${porcentajeProfesor}%</td>
+                        <td>${porcentajeTalent}%</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(error => console.error('Error fetching summary with percentages:', error));
+}
+
+// Call fetchSummaryWithPercentages on search click
+document.getElementById('search').addEventListener('click', fetchSummaryWithPercentages);

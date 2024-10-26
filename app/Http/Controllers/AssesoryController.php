@@ -163,7 +163,7 @@ class AssesoryController extends Controller
         $assesories = $query->get();
 
         $sessionsCount = $assesories->count();
-        $totalStudentHours = $assesories->sum('duration') / 60; // Assuming duration is in minutes
+        $totalStudentHours = $assesories->sum('duration') / 60; 
         $averageSessionDuration = $sessionsCount > 0 ? $assesories->avg('duration') : 0;
         $totalTalentHours = $assesories->sum(function ($assesory) {
                 return $assesory->asesors->count() * $assesory->duration;
