@@ -8,6 +8,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Link to Dashboard CSS -->
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
+    <!-- Add this in the <head> section -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
     @include('components.navbar') <!-- Include the navbar component here -->
@@ -61,7 +63,7 @@
                 <div class="col-md-6 filter-group">
                     <div class="form-group">
                         <label for="talent-member" class="font-weight-bold">Asesores:</label>
-                        <select id="talent-member" class="form-select form-control">
+                        <select id="talent-member" class="form-select form-control" multiple>
                             <option value="">Seleccione un asesor</option>
                         </select>
                     </div>
@@ -69,7 +71,7 @@
                 <div class="col-md-6 filter-group">
                     <div class="form-group">
                         <label for="location" class="font-weight-bold">Sede:</label>
-                        <select id="location" class="form-select form-control">
+                        <select id="location" class="form-select form-control" multiple>
                             <option value="">Todas las sedes</option>
                             <option value="1">México</option>
                             <option value="4">Aguascalientes</option>
@@ -85,7 +87,7 @@
                 <div class="col-md-6 filter-group">
                     <div class="form-group">
                         <label for="category" class="font-weight-bold">Categoría:</label>
-                        <select id="category" class="form-select form-control">
+                        <select id="category" class="form-select form-control" multiple>
                             <option value="">Seleccione una Categoría</option>
                         </select>
                     </div>
@@ -109,6 +111,27 @@
 
     <!-- JS to handle filters and populate dropdowns dynamically -->
     <script src="{{ asset('js/dashboard.js') }}"></script>
+
+    <!-- Add this before the closing </body> tag -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#talent-member').select2({
+                placeholder: "Seleccione un asesor",
+                allowClear: true
+            });
+            $('#location').select2({
+                placeholder: "Todas las sedes",
+                allowClear: true
+            });
+            $('#category').select2({
+                placeholder: "Seleccione una Categoría",
+                allowClear: true
+            });
+        });
+    </script>
 
 </body>
 </html>
