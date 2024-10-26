@@ -105,7 +105,56 @@
         <div class="alert alert-info" id="selected-filters"></div>
 
         <!-- Results Section -->
-        <div id="results" class="results-container"></div>
+        <div id="results" class="results-container">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Correo</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Sesiones</th>
+                            <th>Total Horas TALENT</th>
+                            <th>Duración Media Sesión</th>
+                            <th>% Horas Prof</th>
+                            <th>% Horas TALENT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>mbatiz@up.edu.mx</td>
+                            <td>Mónica</td>
+                            <td>López Bátiz</td>
+                            <td>5</td>
+                            <td>6:20</td>
+                            <td>1:16</td>
+                            <td>4.16 %</td>
+                            <td>4.12 %</td>
+                        </tr>
+                        <tr>
+                            <td>gbenitez@up.edu.mx</td>
+                            <td>Giancarlo Xavier</td>
+                            <td>Benítez Villacreses</td>
+                            <td>144</td>
+                            <td>127:35</td>
+                            <td>0:53</td>
+                            <td>83.89 %</td>
+                            <td>83.7 %</td>
+                        </tr>
+                        <tr>
+                            <td>jalfaro@up.edu.mx</td>
+                            <td>Julio César</td>
+                            <td>Alfaro Avila</td>
+                            <td>21</td>
+                            <td>19:40</td>
+                            <td>0:56</td>
+                            <td>12.93 %</td>
+                            <td>12.81 %</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 
@@ -118,18 +167,40 @@
 
     <script>
         $(document).ready(function() {
-            $('#talent-member').select2({
-                placeholder: "Seleccione un asesor",
+            // Initialize Select2
+            $('#talent-member, #location, #category').select2({
                 allowClear: true
             });
-            $('#location').select2({
-                placeholder: "Todas las sedes",
-                allowClear: true
-            });
-            $('#category').select2({
-                placeholder: "Seleccione una Categoría",
-                allowClear: true
-            });
+
+            // Function to update selected filters
+            function updateSelectedFilters() {
+                let selectedFilters = [];
+
+                // Get selected text values
+                let talentMembers = $('#talent-member').select2('data').map(option => option.text);
+                let locations = $('#location').select2('data').map(option => option.text);
+                let categories = $('#category').select2('data').map(option => option.text);
+
+                // Add to selected filters array if not empty
+                if (talentMembers.length > 0) {
+                    selectedFilters.push('Asesores: ' + talentMembers.join(', '));
+                }
+                if (locations.length > 0) {
+                    selectedFilters.push('Sedes: ' + locations.join(', '));
+                }
+                if (categories.length > 0) {
+                    selectedFilters.push('Categorías: ' + categories.join(', '));
+                }
+
+                // Update the selected-filters div
+                $('#selected-filters').text(selectedFilters.join(' | '));
+            }
+
+            // Event listeners for changes
+            $('#talent-member, #location, #category').on('change', updateSelectedFilters);
+
+            // Initial update
+            updateSelectedFilters();
         });
     </script>
 
