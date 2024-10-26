@@ -24,6 +24,7 @@ COPY . .
 
 # Install application dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN docker-php-ext-install pdo pdo_mysql
 
 # Copy existing application configuration (if needed)
 COPY .env.example .env

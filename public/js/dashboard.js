@@ -57,9 +57,9 @@ document.getElementById('clear-filters').addEventListener('click', function() {
 document.getElementById('search').addEventListener('click', function() {
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
-    const talentMember = document.getElementById('talent-member').value;
-    const location = document.getElementById('location').value;
-    const category = document.getElementById('category').value;
+    const talentMember = $('#talent-member').val().join(','); // Join selected asesors with commas
+    const location = $('#location').val();
+    const category = $('#category').val();
 
     // Display selected filters
     const selectedFilters = document.getElementById('selected-filters');
@@ -72,7 +72,7 @@ document.getElementById('search').addEventListener('click', function() {
     `;
 
     // Fetch and display results
-    fetch(`/api/asesorias?start=${startDate}&end=${endDate}&talent=${talentMember}&location=${location}&category=${category}`)
+    fetch(`/api/asesorias?start=${startDate}&end=${endDate}&asesor=${talentMember}&location=${location}&category=${category}`)
         .then(response => response.json())
         .then(data => {
             const results = document.getElementById('results');

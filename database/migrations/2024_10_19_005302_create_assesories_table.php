@@ -11,7 +11,7 @@ class CreateAssesoriesTable extends Migration
         Schema::create('assesories', function (Blueprint $table) {
             $table->id(); // Primary key
             $table->string('email');
-            $table->date('date');
+            $table->datetime('date'); // Changed from 'date' to 'datetime' to support date and time
             $table->integer('duration');
             $table->unsignedBigInteger('id_sede');
             $table->unsignedBigInteger('category_id'); // Foreign key for the category
@@ -19,7 +19,6 @@ class CreateAssesoriesTable extends Migration
 
             // Add foreign key constraint for category
             $table->foreign('category_id')->references('id')->on('categorias');
-
         });
 
         // Pivot table for the many-to-many relationship between asesors and assesories
