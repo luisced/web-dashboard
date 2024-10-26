@@ -8,11 +8,10 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Link to Dashboard CSS -->
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
-    <!-- Add this in the <head> section -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 </head>
 <body>
-    @include('components.navbar') <!-- Include the navbar component here -->
+    @include('components.navbar')
     <div class="container mt-5">
         <h1 class="text-center text-primary font-weight-bold mb-5">Asesorías Dashboard</h1>
 
@@ -101,9 +100,6 @@
             </div>
         </div>
 
-        <!-- Summary of Selected Filters -->
-        <div class="alert alert-info" id="selected-filters"></div>
-
         <!-- Results Section -->
         <div id="results" class="results-container">
             <div class="table-responsive">
@@ -112,97 +108,123 @@
                         <tr>
                             <th>Correo</th>
                             <th>Nombres</th>
-                            <th>Apellidos</th>
-                            <th>Sesiones</th>
+                            <th>Categoría</th>
+                            <th>Duración (min)</th>
                             <th>Total Horas TALENT</th>
-                            <th>Duración Media Sesión</th>
+                            <th>Sesiones</th>
                             <th>% Horas Prof</th>
                             <th>% Horas TALENT</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>mbatiz@up.edu.mx</td>
-                            <td>Mónica</td>
-                            <td>López Bátiz</td>
-                            <td>5</td>
-                            <td>6:20</td>
-                            <td>1:16</td>
-                            <td>4.16 %</td>
-                            <td>4.12 %</td>
-                        </tr>
-                        <tr>
-                            <td>gbenitez@up.edu.mx</td>
-                            <td>Giancarlo Xavier</td>
-                            <td>Benítez Villacreses</td>
-                            <td>144</td>
-                            <td>127:35</td>
-                            <td>0:53</td>
-                            <td>83.89 %</td>
-                            <td>83.7 %</td>
-                        </tr>
-                        <tr>
-                            <td>jalfaro@up.edu.mx</td>
-                            <td>Julio César</td>
-                            <td>Alfaro Avila</td>
-                            <td>21</td>
-                            <td>19:40</td>
-                            <td>0:56</td>
-                            <td>12.93 %</td>
-                            <td>12.81 %</td>
-                        </tr>
+                    <tbody id="results-body">
+                        <!-- Data will be populated here dynamically -->
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
-    <!-- JS to handle filters and populate dropdowns dynamically -->
     <script src="{{ asset('js/dashboard.js') }}"></script>
-
-    <!-- Add this before the closing </body> tag -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            // Initialize Select2
-            $('#talent-member, #location, #category').select2({
-                allowClear: true
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#talent-member, #location, #category').select2({ allowClear: true });
 
-            // Function to update selected filters
-            function updateSelectedFilters() {
-                let selectedFilters = [];
+            // Fetch asesors and populate the dropdown
+            fetch('/api/asesors')
+                .then(response => response.json())
+                .then(data => {
+                    const talentSelect = document.getElementById('talent-member');
+                    data.forEach(asesor => {
+                        const option = document.createElement('option');
+                        option.value = asesor.id;
+                        option.textContent = asesor.nombre;
+                        talentSelect.appendChild(option);
+                    });
+                }).catch(error => console.error('Error fetching asesors:', error));
 
-                // Get selected text values
-                let talentMembers = $('#talent-member').select2('data').map(option => option.text);
-                let locations = $('#location').select2('data').map(option => option.text);
-                let categories = $('#category').select2('data').map(option => option.text);
+            // Fetch categories and populate the dropdown
+            fetch('/api/categorias')
+                .then(response => response.json())
+                .then(data => {
+                    const categorySelect = document.getElementById('category');
+                    data.forEach(categoria => {
+                        const option = document.createElement('option');
+                        option.value = categoria.id;
+                        option.textContent = categoria.nombre;
+                        categorySelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching categories:', error));
 
-                // Add to selected filters array if not empty
-                if (talentMembers.length > 0) {
-                    selectedFilters.push('Asesores: ' + talentMembers.join(', '));
-                }
-                if (locations.length > 0) {
-                    selectedFilters.push('Sedes: ' + locations.join(', '));
-                }
-                if (categories.length > 0) {
-                    selectedFilters.push('Categorías: ' + categories.join(', '));
-                }
+            function updateSummary() {
+                const start = document.getElementById('start-date').value;
+                const end = document.getElementById('end-date').value;
+                const asesors = $('#talent-member').val().join(',');
 
-                // Update the selected-filters div
-                $('#selected-filters').text(selectedFilters.join(' | '));
+                fetch(`/api/asesorias?start=${start}&end=${end}&asesor=${asesors}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultsBody = document.getElementById('results-body');
+                        resultsBody.innerHTML = ''; // Clear existing results
+
+                        let totalProfessorHours = 0;
+                        let totalTalentHours = 0;
+                        const asesorHours = {};
+
+                        // Calculate total hours for professors and talents
+                        data.forEach(assesory => {
+                            const durationHours = assesory.duration / 60;
+                            totalProfessorHours += durationHours;
+                            totalTalentHours += durationHours * assesory.asesors.length;
+
+                            assesory.asesors.forEach(asesor => {
+                                if (!asesorHours[asesor.id]) {
+                                    asesorHours[asesor.id] = 0;
+                                }
+                                asesorHours[asesor.id] += durationHours;
+                            });
+                        });
+
+                        // Populate the results table
+                        data.forEach(assesory => {
+                            const asesorsNames = assesory.asesors.map(asesor => asesor.nombre).join(', ');
+                            const row = document.createElement('tr');
+
+                            // Calculate percentages for each asesor in this session
+                            const porcentajeProfesor = ((asesorHours[assesory.asesors[0].id] / totalProfessorHours) * 100).toFixed(2) + '%';
+                            const porcentajeTalent = ((asesorHours[assesory.asesors[0].id] / totalTalentHours) * 100).toFixed(2) + '%';
+
+                            row.innerHTML = `
+                                <td>${assesory.email}</td>
+                                <td>${asesorsNames}</td>
+                                <td>${assesory.category ? assesory.category.nombre : ''}</td>
+                                <td>${assesory.duration}</td>
+                                <td>${(assesory.duration / 60).toFixed(2)} hrs</td>
+                                <td>${assesory.asesors.length}</td>
+                                <td>${porcentajeProfesor}</td>
+                                <td>${porcentajeTalent}</td>
+                            `;
+                            resultsBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching results:', error));
             }
 
-            // Event listeners for changes
-            $('#talent-member, #location, #category').on('change', updateSelectedFilters);
+            // Update summary when 'Buscar' button is clicked
+            document.getElementById('search').addEventListener('click', updateSummary);
+            updateSummary(); // Optionally, load initial summary data
 
-            // Initial update
-            updateSelectedFilters();
+            // Clear filters
+            document.getElementById('clear-filters').addEventListener('click', function() {
+                $('#talent-member, #location, #category').val(null).trigger('change');
+                document.getElementById('start-date').value = '';
+                document.getElementById('end-date').value = '';
+                updateSummary();
+            });
         });
     </script>
-
 </body>
 </html>
