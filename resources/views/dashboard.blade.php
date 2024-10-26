@@ -63,11 +63,9 @@
                     <div class="form-group">
                         <label for="talent-member" class="font-weight-bold">Asesores:</label>
                         <select id="talent-member" class="form-select form-control" multiple>
-                            <!-- Options will be populated dynamically -->
                             <option value="1">Asesor 1</option>
                             <option value="2">Asesor 2</option>
                             <option value="3">Asesor 3</option>
-                            <!-- Add more options as needed -->
                         </select>
                         <button type="button" class="btn btn-link p-0 mt-1" onclick="deselectAll('talent-member')">Deselect All</button>
                     </div>
@@ -94,11 +92,9 @@
                     <div class="form-group">
                         <label for="category" class="font-weight-bold">Categoría:</label>
                         <select id="category" class="form-select form-control" multiple>
-                            <!-- Options will be populated dynamically -->
                             <option value="1">Categoría 1</option>
                             <option value="2">Categoría 2</option>
                             <option value="3">Categoría 3</option>
-                            <!-- Add more options as needed -->
                         </select>
                         <button type="button" class="btn btn-link p-0 mt-1" onclick="deselectAll('category')">Deselect All</button>
                     </div>
@@ -118,13 +114,68 @@
         <!-- Results Section -->
         <div id="results" class="results-container"></div>
 
+        <div class="table-responsive mt-4">
+            <h4 class="text-center text-primary font-weight-bold">Resumen de Horas por Asesor</h4>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Asesor</th>
+                        <th>Horas Totales</th>
+                        <th>Porcentaje Profesor</th>
+                        <th>Porcentaje Talent</th>
+                    </tr>
+                </thead>
+                <tbody id="summary-table">
+                    <!-- Rows will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- JS to handle filters and populate dropdowns dynamically -->
-    <script src="{{ asset('js/dashboard.js') }}"></script>
-
-    <!-- JavaScript Function to Deselect All Options -->
+    <!-- Embedded JavaScript -->
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hardcoded summary data
+            const summaryData = {
+                sessionsCount: 5,
+                totalStudentHours: 5.75,
+                averageSessionDuration: 69,
+                totalTalentHours: 11.5,
+                uniqueStudents: 5
+            };
+
+            // Display hardcoded summary data
+            document.getElementById('sessionsCount').textContent = summaryData.sessionsCount;
+            document.getElementById('totalStudentHours').textContent = summaryData.totalStudentHours;
+            document.getElementById('averageSessionDuration').textContent = summaryData.averageSessionDuration;
+            document.getElementById('totalTalentHours').textContent = summaryData.totalTalentHours;
+            document.getElementById('uniqueStudents').textContent = summaryData.uniqueStudents;
+
+            // Placeholder for updating summary table with hardcoded data
+            const summaryTable = document.getElementById('summary-table');
+            const hardcodedAsesors = [
+                { nombre: "Asesor 1", horas_total: 4.5, horas_profesor: 5, horas_talent: 11.5 },
+                { nombre: "Asesor 2", horas_total: 3.5, horas_profesor: 5, horas_talent: 11.5 },
+                { nombre: "Asesor 3", horas_total: 2.5, horas_profesor: 5, horas_talent: 11.5 }
+            ];
+
+            // Populate table with hardcoded data
+            hardcodedAsesors.forEach(asesor => {
+                const porcentajeProfesor = ((asesor.horas_total / asesor.horas_profesor) * 100).toFixed(2);
+                const porcentajeTalent = ((asesor.horas_total / asesor.horas_talent) * 100).toFixed(2);
+
+                summaryTable.innerHTML += `
+                    <tr>
+                        <td>${asesor.nombre}</td>
+                        <td>${asesor.horas_total}</td>
+                        <td>${porcentajeProfesor}%</td>
+                        <td>${porcentajeTalent}%</td>
+                    </tr>
+                `;
+            });
+        });
+
+        // Function to deselect all options in a select element
         function deselectAll(selectId) {
             var select = document.getElementById(selectId);
             for (var i = 0; i < select.options.length; i++) {
@@ -132,6 +183,5 @@
             }
         }
     </script>
-
 </body>
 </html>
