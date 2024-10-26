@@ -23,7 +23,7 @@ class AssesoryController extends Controller
         }
 
         if ($request->has('talent') && $request->talent != '') {
-            $query->whereHas('asesors', function($q) use ($request) {
+            $query->whereHas('asesors', function ($q) use ($request) {
                 $q->where('asesors.id', $request->talent); // Specify the table for the id
             });
         }
@@ -34,7 +34,7 @@ class AssesoryController extends Controller
 
         // Add a check for 'asesor' filter
         if ($request->has('asesor') && $request->asesor != '') {
-            $query->whereHas('asesors', function($q) use ($request) {
+            $query->whereHas('asesors', function ($q) use ($request) {
                 $q->where('asesors.id', $request->asesor); // Specify the table for the id
             });
         }
@@ -133,16 +133,41 @@ class AssesoryController extends Controller
         return view('dashboard-results', compact('assesories'));
     }
 
-    public function getSummary()
+    public function getSummary(Request $request)
     {
-        $assesories = Assesory::with('asesors')->get();
+        $query = Assesory::with('asesors');
+
+        // Apply filters
+        if ($request->has('start')) {
+            $query->whereDate('created_at', '>=', $request->input('start'));
+        }
+
+        if ($request->has('end')) {
+            $query->whereDate('created_at', '<=', $request->input('end'));
+        }
+
+        if ($request->has('talent')) {
+            $query->whereHas('asesors', function ($q) use ($request) {
+                $q->where('id', $request->input('talent'));
+            });
+        }
+
+        if ($request->has('location')) {
+            $query->where('location', $request->input('location'));  // Assuming 'location' is a column in the Assesory model
+        }
+
+        if ($request->has('category')) {
+            $query->where('category_id', $request->input('category'));  // Assuming 'category_id' is a foreign key in Assesory
+        }
+
+        $assesories = $query->get();
 
         $sessionsCount = $assesories->count();
         $totalStudentHours = $assesories->sum('duration') / 60; // Assuming duration is in minutes
         $averageSessionDuration = $sessionsCount > 0 ? $assesories->avg('duration') : 0;
         $totalTalentHours = $assesories->sum(function ($assesory) {
-            return $assesory->asesors->count() * $assesory->duration;
-        }) / 60;
+                return $assesory->asesors->count() * $assesory->duration;
+            }) / 60;
         $uniqueStudents = $assesories->pluck('email')->unique()->count();
 
         return response()->json([
@@ -153,4 +178,5 @@ class AssesoryController extends Controller
             'uniqueStudents' => $uniqueStudents,
         ]);
     }
+
 }

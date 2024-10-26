@@ -7,7 +7,6 @@ routes.
 
 1. **Generate Application Key**
    ```bash
-   docker-compose exec app php artisan key:generate
    ```
 
 2. **Run Migrations**
@@ -17,7 +16,7 @@ routes.
 
 3. **Seed the Database**
    ```bash
-   docker-compose exec app php artisan db:seed
+    docker-compose exec app php artisan db:import-sql panteras2.sql
    ```
 
 4. **List All Routes**
